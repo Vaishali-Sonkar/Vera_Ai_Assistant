@@ -9,6 +9,8 @@ client = genai.Client(
 )
 
 
+
+
 def create_embedding(text: str):
     response = client.models.embed_content(
         model="gemini-embedding-001",
