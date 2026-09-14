@@ -108,15 +108,19 @@ def submit_feedback(data: FeedbackRequest):
 def submit_contact(data: ContactRequest):
     try:
         send_contact_email(data)
+
     except EmailConfigurationError as exc:
+        print(f"EMAIL CONFIG ERROR: {exc}")
         raise HTTPException(
             status_code=503,
-            detail="Email service is not configured. Please try again later."
+            detail=str(exc)
         ) from exc
+
     except (smtplib.SMTPException, OSError) as exc:
+        print(f"SMTP ERROR: {type(exc).__name__}: {exc}")
         raise HTTPException(
             status_code=502,
-            detail="The message could not be sent. Please try again."
+            detail=str(exc)
         ) from exc
 
     return {
