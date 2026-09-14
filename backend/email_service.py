@@ -1,7 +1,6 @@
 import os
-import smtplib
-from email.message import EmailMessage
 
+import resend
 from dotenv import load_dotenv
 
 from schemas import ContactRequest
@@ -14,39 +13,57 @@ class EmailConfigurationError(RuntimeError):
 
 
 def send_contact_email(contact: ContactRequest) -> None:
-    host = os.getenv("SMTP_HOST", "").strip()
-    username = os.getenv("SMTP_USERNAME", "").strip()
-    password = os.getenv("SMTP_PASSWORD", "")
-    recipient = os.getenv("CONTACT_EMAIL", "vaishalisonkar.tech@gmail.com").strip()
+    api_key = os.getenv("RESEND_API_KEY", "").strip()
+    recipient = os.getenv(
+        "CONTACT_EMAIL",
+        "vaishalisonkar.tech@gmail.com"
+    ).strip()
+
+    if not api_key:
+        raise EmailConfigurationError(
+            "RESEND_API_KEY is not configured"
+        )
+
+    if not recipient:
+        raise EmailConfigurationError(
+            "CONTACT_EMAIL is not configured"
+        )
+
+    resend.api_key = api_key
+
+    params: resend.Emails.SendParams = {
+        "from": "Vera AI Assistant <onboarding@resend.dev>",
+        "to": [recipient],
+        "reply_to": contact.email,
+        "subject": f"Portfolio contact: {contact.subject}",
+        "html": f"""
+        <html>
+            <body>
+                <h2>New Portfolio Contact</h2>
+
+                <p><strong>Name:</strong> {contact.name}</p>
+
+                <p><strong>Email:</strong> {contact.email}</p>
+
+                <p><strong>Subject:</strong> {contact.subject}</p>
+
+                <h3>Message</h3>
+
+                <p>
+                    {contact.message}
+                </p>
+            </body>
+        </html>
+        """
+    }
 
     try:
-        port = int(os.getenv("SMTP_PORT", "587"))
-    except ValueError as exc:
-        raise EmailConfigurationError("SMTP_PORT must be a number") from exc
+        email = resend.Emails.send(params)
 
-    if not host or not username or not password or not recipient:
-        raise EmailConfigurationError("SMTP email settings are incomplete")
+        if not email:
+            raise RuntimeError("Resend did not return an email response")
 
-    email = EmailMessage()
-    email["From"] = username
-    email["To"] = recipient
-    email["Reply-To"] = contact.email
-    email["Subject"] = f"Portfolio contact: {contact.subject}"
-    email.set_content(
-        f"From / Visitor: {contact.name}\n"
-        f"Visitor Email: {contact.email}\n"
-        f"Subject: {contact.subject}\n\n"
-        f"Message:\n{contact.message}\n"
-    )
-
-    if port == 465:
-        with smtplib.SMTP_SSL(host, port, timeout=20) as smtp:
-            smtp.login(username, password)
-            smtp.send_message(email)
-    else:
-        with smtplib.SMTP(host, port, timeout=20) as smtp:
-            smtp.ehlo()
-            smtp.starttls()
-            smtp.ehlo()
-            smtp.login(username, password)
-            smtp.send_message(email)
+    except Exception as exc:
+        raise RuntimeError(
+            f"Resend email failed: {exc}"
+        ) from exc

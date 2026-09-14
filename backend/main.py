@@ -1,4 +1,4 @@
-import smtplib
+from email_service import EmailConfigurationError, send_contact_email
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
@@ -110,17 +110,17 @@ def submit_contact(data: ContactRequest):
         send_contact_email(data)
 
     except EmailConfigurationError as exc:
-        print(f"EMAIL CONFIG ERROR: {exc}")
         raise HTTPException(
             status_code=503,
-            detail=str(exc)
+            detail="Email service is not configured."
         ) from exc
 
-    except (smtplib.SMTPException, OSError) as exc:
-        print(f"SMTP ERROR: {type(exc).__name__}: {exc}")
+    except Exception as exc:
+        print(f"RESEND ERROR: {type(exc).__name__}: {exc}")
+
         raise HTTPException(
             status_code=502,
-            detail=str(exc)
+            detail="The message could not be sent. Please try again."
         ) from exc
 
     return {
