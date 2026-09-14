@@ -30,8 +30,8 @@ app.add_middleware(
 
 # Load FAISS index when the API starts
 store = VectorStore.load(
-    r"../index/resume.index",
-    r"../index/chunks.pkl"
+    index_path="index/resume.index",
+    chunks_path="index/chunks.pkl"
 )
 
 
