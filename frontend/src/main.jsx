@@ -4,7 +4,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import './styles.css'
 
-const API = `${window.location.protocol}//${window.location.hostname}:8000`
+const API = import.meta.env.VITE_BACKEND_URL.replace(/\/+$/, '')
 const SOCIAL_LINKS = {
   linkedin: 'https://www.linkedin.com/in/vaishali-sonkar-b83a87314/',
   github: 'https://github.com/Vaishali-Sonkar',
