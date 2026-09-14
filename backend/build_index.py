@@ -3,7 +3,6 @@ from chunker import chunk_text
 from embedder import create_embedding
 from vector_store import VectorStore
 from chatbot import generate_answer
-import os
 
 
 PDF_PATH  = r"D:\ai_resume_assistant\backend\data\vaishali_sept.pdf"
@@ -42,11 +41,11 @@ store.add(
     embeddings,
     chunks
 )
-os.makedirs("../index", exist_ok=True)
+
 
 store.save(
-    r"../index/resume.index",
-    r"../index/chunks.pkl"
+    index_path="index/resume.index",
+    chunks_path="index/chunks.pkl"
 )
 
 print("Index saved successfully")

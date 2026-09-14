@@ -1,6 +1,7 @@
 import faiss
 import numpy as np
 import pickle
+from pathlib import Path
 
 
 class VectorStore:
@@ -44,6 +45,9 @@ class VectorStore:
         return results
 
     def save(self, index_path, chunks_path):
+
+        Path(index_path).parent.mkdir(parents=True, exist_ok=True)
+        Path(chunks_path).parent.mkdir(parents=True, exist_ok=True)
 
         faiss.write_index(
             self.index,
