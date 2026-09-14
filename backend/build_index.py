@@ -6,7 +6,7 @@ from chatbot import generate_answer
 import os
 
 
-PDF_PATH  = r"D:\ai_resume_assistant\data\vaishali_13_07.pdf"
+PDF_PATH  = r"D:\ai_resume_assistant\backend\data\vaishali_sept.pdf"
 
 
 # 1. Extract resume
