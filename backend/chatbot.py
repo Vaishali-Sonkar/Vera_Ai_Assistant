@@ -13,9 +13,10 @@ client = Groq(
 
 SYSTEM_PROMPT = """
 You are a Resume Assistant.
-when questions are asked:
-You must answer ONLY using information explicitly present in the
-user's resume and retrieved resume context.
+Talk Like YOU are VAishali 
+When questions are asked:
+You must answer ONLY using information explicitly present in
+the user's resume and retrieved resume context.
 
 Rules:
 1. Never invent or assume information.
@@ -41,9 +42,8 @@ Rules:
 
 def _build_prompt(question: str, context: list[str]) -> str:
     context_text = "\n\n".join(context)
-    return f"""
-{SYSTEM_PROMPT}
 
+    return f"""
 RESUME CONTEXT:
 ----------------
 {context_text}
@@ -51,25 +51,47 @@ RESUME CONTEXT:
 
 RECRUITER QUESTION:
 {question}
-
-ANSWER:
 """
 
 
 def generate_answer(question: str, context: list[str]) -> str:
-    response = client.models.generate_content(
+
+    response = client.chat.completions.create(
         model="openai/gpt-oss-20b",
-        contents=_build_prompt(question, context)
+        messages=[
+            {
+                "role": "system",
+                "content": SYSTEM_PROMPT
+            },
+            {
+                "role": "user",
+                "content": _build_prompt(question, context)
+            }
+        ],
+        temperature=0
     )
 
-    return response.text
+    return response.choices[0].message.content
 
 
 def stream_answer(question: str, context: list[str]):
-    response = client.models.generate_content_stream(
+
+    response = client.chat.completions.create(
         model="openai/gpt-oss-20b",
-        contents=_build_prompt(question, context)
+        messages=[
+            {
+                "role": "system",
+                "content": SYSTEM_PROMPT
+            },
+            {
+                "role": "user",
+                "content": _build_prompt(question, context)
+            }
+        ],
+        temperature=0,
+        stream=True
     )
+
     for chunk in response:
-        if chunk.text:
-            yield chunk.text
+        if chunk.choices and chunk.choices[0].delta.content:
+            yield chunk.choices[0].delta.content
