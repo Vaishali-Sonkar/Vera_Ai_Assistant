@@ -3,6 +3,9 @@ import { createRoot } from 'react-dom/client'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import './styles.css'
+import ProjectShowcase from './components/ProjectShowcase'
+import { vidyaroom } from './data/projects'
+import Certificates from './components/Certificates'
 
 const API = import.meta.env.VITE_BACKEND_URL.replace(/\/+$/, '')
 const SOCIAL_LINKS = {
@@ -23,7 +26,7 @@ const icons = {
 }
 
 function Sidebar({ page, setPage, newChat }) {
-  const nav = (id, icon, label) => <button className={page === id ? 'side-link active' : 'side-link'} onClick={() => setPage(id)}><span>{icons[icon]}</span>{label}</button>
+  const nav = (id, icon, label) => <button aria-current={page === id ? 'page' : undefined} className={page === id ? 'side-link active' : 'side-link'} onClick={() => setPage(id)}><span>{icons[icon]}</span>{label}</button>
   return <aside className="sidebar">
     <div className="brand"><div><strong>Vera</strong><small>AI Resume Assistant</small></div></div>
     <button className="new-chat" onClick={newChat}><span>＋</span> New Chat</button>
@@ -41,6 +44,10 @@ function SocialIcon({ type }) {
 
 function Header() {
   return <header><div className="header-actions"><a className="resume-download" href="/assets/vaishali_sept.pdf" download="Vaishali_Sonkar_Resume.pdf" aria-label="Download Vaishali's resume" title="Download resume"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 3h2v10.2l3.6-3.6 1.4 1.4-6 6-6-6 1.4-1.4 3.6 3.6V3ZM5 19h14v2H5v-2Z"/></svg><span>Resume</span></a><a className="social-link" href={SOCIAL_LINKS.linkedin} target="_blank" rel="noopener noreferrer" aria-label="Open Vaishali's LinkedIn profile" title="LinkedIn"><SocialIcon type="linkedin"/></a><a className="social-link" href={SOCIAL_LINKS.github} target="_blank" rel="noopener noreferrer" aria-label="Open Vaishali's GitHub profile" title="GitHub"><SocialIcon type="github"/></a><span className="header-divider" aria-hidden="true"/><div className="mini-avatar">V</div></div></header>
+}
+
+function PortfolioIntro() {
+  return <div className="portfolio-intro"><div className="intro-copy"><p className="eyebrow">THE PERSON BEHIND THE RESUME</p><h1>Hi, I'm Vaishali.<br/><em>Let's connect.</em></h1><p className="intro-description">Explore my skills, projects, and professional journey through a conversation with my AI resume assistant.</p><a className="intro-cta" href="#resume-chat">Ask me anything <span aria-hidden="true">?</span></a><div className="intro-socials"><span>FIND ME ON</span><a href={SOCIAL_LINKS.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub"><SocialIcon type="github"/></a><a href={SOCIAL_LINKS.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><SocialIcon type="linkedin"/></a></div></div><div className="intro-art"><div className="art-grid"/><span className="art-tag">A little about me ?</span><div className="code-card"><div className="code-toolbar"><span/><span/><span/><small>meet-vaishali.js</small></div><pre><code><span>const</span> vaishali = {'{'}<br/>  name: <i>'Vaishali Sonkar'</i>,<br/>  focus: <i>'AI &amp; Software'</i>,<br/>  portfolio: <i>'A conversation away'</i>,<br/>  curiosity: <b>true</b><br/>{'};'}</code></pre><div className="code-footer"><span>? Powered by curiosity</span><span>Let's build something.</span></div></div><div className="portrait-tag"><img src="/assets/profile-avatar.jpg" alt="Vaishali Sonkar"/><div><strong>Vaishali Sonkar</strong><small>AI &amp; SOFTWARE PROFESSIONAL</small></div></div></div></div>
 }
 
 function MessageContent({ message }) {
@@ -75,9 +82,9 @@ function Chat({ messages, setMessages }) {
   }
   const ask = e => { e.preventDefault(); sendQuestion(question) }
   return <main className="chat-page">
-    {messages.length === 0 ? <section className="chat-hero"><div className="hero-orb"></div><h1>Hey, I’m <em>Vaishali</em>. Ask me anything about my resume</h1><div className="chips">{suggestedQuestions.map(item => <button type="button" key={item.text} onClick={() => sendQuestion(item.text)} disabled={loading}><span aria-hidden="true">{icons[item.icon]}</span>{item.text}</button>)}</div></section>
-      : <section className="conversation"><div className="conversation-head"><div className="hero-orb small"></div><div><h1>Resume chat</h1><p>Ask anything about Vaishali’s professional experience.</p></div></div>{messages.map((m,i)=><div key={i} className={`message ${m.role}`}><b>{m.role === 'user' ? 'You' : 'Sorin-AI'}</b><MessageContent message={m}/></div>)}{thinking && <div className="message assistant typing"><b>Vera</b><span className="typing-dots" aria-label="Sorin-AI is thinking"><i/><i/><i/></span></div>}</section>}
-    <form className="composer" onSubmit={ask}><div className="composer-top"><span className="plus">＋</span><textarea rows="2" value={question} onChange={e=>setQuestion(e.target.value)} onKeyDown={e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();ask(e)}}} placeholder="Ask about skills, experience, projects, and more..."/></div><div className="composer-bottom"><div className="mode">✺ &nbsp; Auto</div><span className="hint">Enter to send · Shift + Enter for a new line</span><button disabled={loading || !question.trim()}>Send {icons.send}</button></div></form>
+    {messages.length === 0 ? <><PortfolioIntro/><section className="chat-hero" id="resume-chat"><p className="eyebrow">01 / EXPLORE MY RESUME</p><h2>A conversation <em>starts here.</em></h2><p>Pick a question, or ask your own below.</p><div className="chips">{suggestedQuestions.map(item => <button type="button" key={item.text} onClick={() => sendQuestion(item.text)} disabled={loading}><span aria-hidden="true">{icons[item.icon]}</span>{item.text}</button>)}</div></section></>
+      : <section className="conversation"><div className="conversation-head"><div className="hero-orb small"></div><div><h1>Resume chat</h1><p>Ask anything about Vaishali’s professional experience.</p></div></div>{messages.map((m,i)=><div key={i} className={`message ${m.role}`}><b>{m.role === 'user' ? 'You' : 'Vera'}</b><MessageContent message={m}/></div>)}{thinking && <div className="message assistant typing"><b>Vera</b><span className="typing-dots" aria-label="Vera is thinking"><i/><i/><i/></span></div>}</section>}
+    <form className="composer" onSubmit={ask}><div className="composer-top"><span className="plus">＋</span><textarea aria-label="Ask about Vaishali?s resume" rows="2" value={question} onChange={e=>setQuestion(e.target.value)} onKeyDown={e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();ask(e)}}} placeholder="Ask about skills, experience, projects, and more..."/></div><div className="composer-bottom"><div className="mode">✺ &nbsp; Auto</div><span className="hint">Enter to send · Shift + Enter for a new line</span><button disabled={loading || !question.trim()}>Send {icons.send}</button></div></form>
   </main>
 }
 
@@ -106,9 +113,13 @@ function Suggestions() {
   return <main className="suggest-page"><form className="suggest-card" onSubmit={submit}><div className="suggest-icon">□</div><h1>Help me improve</h1><p>Have an idea or found a bug? Your feedback helps shape the<br/>future of this tool.</p><label>Feedback Type<select name="type"><option>Feature Request</option><option>Bug Report</option><option>General Feedback</option></select></label><label>Your Suggestion<textarea required name="feedback" placeholder="Tell me what you’d like to see..."/></label><div className="optional"><input name="name" placeholder="Name (optional)"/><input type="email" name="email" placeholder="Email (optional)"/></div>{status && <p className={status.startsWith('Couldn')?'error':'success'}>{status}</p>}<button className="primary-btn">Submit Suggestion&nbsp; ➤</button></form><Footer/></main>
 }
 
+function Projects() {
+  return <main className="content-page projects-page"><p className="eyebrow">SELECTED WORK</p><h1 className="page-title">Ideas into <em>impact.</em></h1><p className="page-subtitle">AI, backend engineering, and thoughtful product experiences.</p><ProjectShowcase project={vidyaroom}/><Footer/></main>
+}
+
 function Placeholder({page}) { return <main className="placeholder"><div className="hero-orb"><span>◇</span></div><h1>{page[0].toUpperCase()+page.slice(1)}</h1><p>Coming soon!</p></main> }
 function Footer(){return <footer><span>© 2026 Vera Resume Portfolio</span><span>GitHub &nbsp;&nbsp; LinkedIn &nbsp;&nbsp; Email</span></footer>}
 
-function App(){const[page,setPage]=useState('chat');const[messages,setMessages]=useState([]);const newChat=()=>{setMessages([]);setPage('chat')};return <div className="app"><Sidebar page={page} setPage={setPage} newChat={newChat}/><div className="shell"><Header/>{page==='chat'?<Chat messages={messages} setMessages={setMessages}/>:page==='contact'?<Contact/>:page==='suggestions'?<Suggestions/>:<Placeholder page={page}/>}</div></div>}
+function App(){const[page,setPage]=useState('chat');const[messages,setMessages]=useState([]);const newChat=()=>{setMessages([]);setPage('chat')};return <div className="app"><Sidebar page={page} setPage={setPage} newChat={newChat}/><div className="shell"><Header/>{page==='chat'?<Chat messages={messages} setMessages={setMessages}/>:page==='certificates'?<Certificates/>:page==='projects'?<Projects/>:page==='contact'?<Contact/>:page==='suggestions'?<Suggestions/>:<Placeholder page={page}/>}</div></div>}
 
 createRoot(document.getElementById('root')).render(<React.StrictMode><App/></React.StrictMode>)
