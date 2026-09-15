@@ -18,7 +18,7 @@ const suggestedQuestions = [
 ]
 
 const icons = {
-  bot: '◉', certificate: '✺', projects: '▱', contact: '✉', suggest: '♧',
+  bot: '', certificate: '✺', projects: '▱', contact: '✉', suggest: '♧',
   globe: '◎', fire: '♨', clock: '◷', trend: '↗', layers: '◇', code: '⌘', monitor: '◫', send: '↑'
 }
 
