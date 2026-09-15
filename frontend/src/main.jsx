@@ -25,7 +25,7 @@ const icons = {
 function Sidebar({ page, setPage, newChat }) {
   const nav = (id, icon, label) => <button className={page === id ? 'side-link active' : 'side-link'} onClick={() => setPage(id)}><span>{icons[icon]}</span>{label}</button>
   return <aside className="sidebar">
-    <div className="brand"><div className="brand-mark">{icons.bot}</div><div><strong>Vera</strong><small>AI Resume Assistant</small></div></div>
+    <div className="brand"><div><strong>Vera</strong><small>AI Resume Assistant</small></div></div>
     <button className="new-chat" onClick={newChat}><span>＋</span> New Chat</button>
     <p className="nav-label">MENU</p>
     <nav>{nav('certificates','certificate','Certificates')}{nav('projects','projects','Projects')}</nav>
