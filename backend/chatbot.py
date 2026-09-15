@@ -1,12 +1,13 @@
 import os
 
 from dotenv import load_dotenv
-from google import genai
+from groq import Groq
+
 
 load_dotenv()
 
-client = genai.Client(
-    api_key=os.getenv("GOOGLE_API_KEY")
+client = Groq(
+    api_key=os.getenv("GROQ_API_KEY")
 )
 
 
@@ -57,7 +58,7 @@ ANSWER:
 
 def generate_answer(question: str, context: list[str]) -> str:
     response = client.models.generate_content(
-        model="models/gemini-3.6-flash",
+        model="openai/gpt-oss-20b",
         contents=_build_prompt(question, context)
     )
 
@@ -66,7 +67,7 @@ def generate_answer(question: str, context: list[str]) -> str:
 
 def stream_answer(question: str, context: list[str]):
     response = client.models.generate_content_stream(
-        model="models/gemini-3.6-flash",
+        model="openai/gpt-oss-20b",
         contents=_build_prompt(question, context)
     )
     for chunk in response:
