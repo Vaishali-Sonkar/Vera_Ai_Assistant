@@ -118,7 +118,7 @@ function Projects() {
 }
 
 function Placeholder({page}) { return <main className="placeholder"><div className="hero-orb"><span>◇</span></div><h1>{page[0].toUpperCase()+page.slice(1)}</h1><p>Coming soon!</p></main> }
-function Footer(){return <footer><span>© 2026 Vera Resume Portfolio</span><span>GitHub &nbsp;&nbsp; LinkedIn &nbsp;&nbsp; Email</span></footer>}
+function Footer(){return <footer><span>© 2026 Vera Resume Portfolio</span><nav className="footer-links" aria-label="Social and contact links"><a href={SOCIAL_LINKS.github} target="_blank" rel="noopener noreferrer">GitHub</a><a href={SOCIAL_LINKS.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a><a href="mailto:vaishalisonkar.tech@gmail.com">Email</a></nav></footer>}
 
 function App(){const[page,setPage]=useState('chat');const[messages,setMessages]=useState([]);const newChat=()=>{setMessages([]);setPage('chat')};return <div className="app"><Sidebar page={page} setPage={setPage} newChat={newChat}/><div className="shell"><Header/>{page==='chat'?<Chat messages={messages} setMessages={setMessages}/>:page==='certificates'?<Certificates/>:page==='projects'?<Projects/>:page==='contact'?<Contact/>:page==='suggestions'?<Suggestions/>:<Placeholder page={page}/>}</div></div>}
 
