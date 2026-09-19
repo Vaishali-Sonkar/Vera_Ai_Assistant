@@ -18,3 +18,17 @@ export const vidyaroom = {
   ],
   pdf: '/projects/doc.pdf',
 }
+
+export const salesForecasting = {
+  id: 'sales-forecasting',
+  name: 'Sales Forecasting',
+  subtitle: 'Retail Sales Forecasting with SARIMA and XGBoost',
+  tagline: 'Turning historical sales into informed decisions.',
+  description: 'Analyzed four years of Superstore transactions, aggregated them into a daily time series, and used trend, seasonality, stationarity, and ACF/PACF analysis to guide forecasting and business insights.',
+  tech: ['Python', 'Pandas', 'Statsmodels', 'XGBoost', 'Scikit-learn', 'Matplotlib'],
+  highlights: ['SARIMA: MAE 1,857 · RMSE 2,430', 'XGBoost: MAE 1,898 · RMSE 2,502', '30-day sales forecast', 'Historical sales insights'],
+  images: [{ src: '/projects/sales-forecasting-dashboard.png', alt: 'Sales Forecast Dashboard showing key metrics and historical daily sales' }],
+  github: 'https://github.com/Vaishali-Sonkar/sales_forcasting',
+}
+
+export const projects = [vidyaroom, salesForecasting]

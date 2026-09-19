@@ -4,7 +4,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import './styles.css'
 import ProjectShowcase from './components/ProjectShowcase'
-import { vidyaroom } from './data/projects'
+import { projects } from './data/projects'
 import Certificates from './components/Certificates'
 
 const API = import.meta.env.VITE_BACKEND_URL.replace(/\/+$/, '')
@@ -114,7 +114,7 @@ function Suggestions() {
 }
 
 function Projects() {
-  return <main className="content-page projects-page"><p className="eyebrow">SELECTED WORK</p><h1 className="page-title">Ideas into <em>impact.</em></h1><p className="page-subtitle">AI, backend engineering, and thoughtful product experiences.</p><ProjectShowcase project={vidyaroom}/><Footer/></main>
+  return <main className="content-page projects-page"><p className="eyebrow">SELECTED WORK</p><h1 className="page-title">Ideas into <em>impact.</em></h1><p className="page-subtitle">AI, backend engineering, and thoughtful product experiences.</p><div className="project-list">{projects.map((project, index) => <ProjectShowcase key={project.id} project={project} index={index}/>)}</div><Footer/></main>
 }
 
 function Placeholder({page}) { return <main className="placeholder"><div className="hero-orb"><span>◇</span></div><h1>{page[0].toUpperCase()+page.slice(1)}</h1><p>Coming soon!</p></main> }

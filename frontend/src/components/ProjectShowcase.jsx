@@ -44,7 +44,7 @@ export function ProjectCarousel({ images, name, suspended = false }) {
       {!reducedMotion && <button type="button" className="project-playback" aria-label={paused ? 'Resume slideshow' : 'Pause slideshow'} aria-pressed={paused} onClick={() => setPaused(value => !value)}>{paused ? 'Play' : 'Pause'}</button>}
       <button type="button" className="project-arrow" aria-label="Next screenshot" onClick={() => move(1)}>&rarr;</button>
     </div>}
-    <p className="project-preview-caption">A closer look at the learning experience</p>
+    <p className="project-preview-caption">{name === 'VidyaRoom' ? 'A closer look at the learning experience' : `A closer look at ${name}`}</p>
   </div>
 }
 
@@ -76,7 +76,7 @@ export function ProjectDetailsModal({ project, onClose, image, subtitle = 'Proje
   }, [closing, onClose])
 
   useEffect(() => {
-    if (image) return
+    if (image || !project.pdf) return
     const controller = new AbortController()
     // Vite serves index.html for absent public assets, so check the media type too.
     fetch(project.pdf, { method: 'HEAD', signal: controller.signal })
@@ -98,18 +98,19 @@ export function ProjectDetailsModal({ project, onClose, image, subtitle = 'Proje
   </dialog>
 }
 
-export default function ProjectShowcase({ project }) {
+export default function ProjectShowcase({ project, index = 0 }) {
   const [detailsOpen, setDetailsOpen] = useState(false)
   const closeDetails = useCallback(() => setDetailsOpen(false), [])
   const headingId = useId()
   return <section className="project-showcase" aria-labelledby={headingId}>
     <ProjectCarousel images={project.images} name={project.name} suspended={detailsOpen}/>
-    <div className="project-copy"><p className="eyebrow">FEATURED PROJECT / 01</p><h2 id={headingId}>{project.name}</h2><p className="project-subtitle">{project.subtitle}</p><p className="project-tagline">{project.tagline}</p><p className="project-description">{project.description}</p>
-      <div className="project-achievement"><span aria-hidden="true">&#10022;</span><div><strong>{project.achievement.title}</strong><span>{project.achievement.event}</span></div></div>
+    <div className="project-copy"><p className="eyebrow">FEATURED PROJECT / {String(index + 1).padStart(2, '0')}</p><h2 id={headingId}>{project.name}</h2><p className="project-subtitle">{project.subtitle}</p><p className="project-tagline">{project.tagline}</p><p className="project-description">{project.description}</p>
+      {project.achievement && <div className="project-achievement"><span aria-hidden="true">&#10022;</span><div><strong>{project.achievement.title}</strong><span>{project.achievement.event}</span></div></div>}
       <ul className="project-highlights">{project.highlights.map(highlight => <li key={highlight}>{highlight}</li>)}</ul>
       <ul className="project-tech" aria-label="Technology stack">{project.tech.map(tech => <li key={tech}>{tech}</li>)}</ul>
-      <button type="button" className="project-details-button" aria-haspopup="dialog" onClick={() => setDetailsOpen(true)}>View Details <span aria-hidden="true">&rarr;</span></button>
+      {project.pdf && <button type="button" className="project-details-button" aria-haspopup="dialog" onClick={() => setDetailsOpen(true)}>View Details <span aria-hidden="true">&rarr;</span></button>}
+      {project.github && <a className="project-details-button" href={project.github} target="_blank" rel="noopener noreferrer">View GitHub <span aria-hidden="true">&rarr;</span></a>}
     </div>
-    {detailsOpen && <ProjectDetailsModal project={project} onClose={closeDetails}/>}
+    {detailsOpen && project.pdf && <ProjectDetailsModal project={project} onClose={closeDetails}/>}
   </section>
 }
